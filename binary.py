@@ -10,24 +10,28 @@ from sklearn.pipeline import make_pipeline
 # Load the CSV file into a pandas DataFrame
 df = pd.read_csv('TrainingDataBinary.csv', header=None)
 
+# Label column in training data
 target = 128
 
-for a in range(1, 100):
-    # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(
-        df.drop(target, axis=1), df[target], test_size=(0.26)
-    )
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    df.drop(target, axis=1), df[target], test_size=(0.26), random_state=42
+)
 
-    # Create an instance of the SGDClassifier
-    clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3, loss='log_loss'))
+# Create an instance of the SGDClassifier
+clf = make_pipeline(StandardScaler(), SGDClassifier(max_iter=1000, tol=1e-3, loss='log_loss', random_state=42))
 
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
+# Train classifier
+clf.fit(X_train, y_train)
 
-    accuracy = accuracy_score(y_test, y_pred)
-    print(f"Accuracy: {accuracy}")
+# Predict accuracy test
+y_pred = clf.predict(X_test)
 
-# Get testing data classified
+# Calculate Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy}")
+
+# Classify testing data
 test = pd.read_csv('TestingDataBinary.csv', header=None)
 
 y_out = clf.predict(test)
